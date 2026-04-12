@@ -14,7 +14,6 @@ class TextBoxService(BaseService):
 
     def fill_and_submit(self, data: Optional[TextBoxData] = None) -> TextBoxData:
         form_data = data or generate_text_box_data()
-        self._page.open_page()
         self._page.fill_form(
             name=form_data.full_name,
             email=form_data.email,
