@@ -17,9 +17,6 @@ class TextBoxPage(BasePage):
     OUTPUT_CURRENT   = (By.CSS_SELECTOR, "#output #currentAddress")
     OUTPUT_PERMANENT = (By.CSS_SELECTOR, "#output #permanentAddress")
 
-    def open_page(self) -> None:
-        self.open(self.PATH)
-
     def fill_form(self, name: str, email: str, current: str, permanent: str) -> None:
         self.type(self.FULL_NAME, name)
         self.type(self.EMAIL, email)

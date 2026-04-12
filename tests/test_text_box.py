@@ -14,9 +14,16 @@ class TestTextBox:
         text_box_page: TextBoxPage,
         text_box_service: TextBoxService,
     ) -> None:
-        text_box_page.open_page()
+        text_box_page.open()
         data = generate_text_box_data()
 
-        text_box_service.fill_and_submit(data)
+        output = text_box_service.fill_and_submit(data)
 
-        text_box_service.verify_result(data)
+        assert data.full_name in output["name"], \
+            f"Name mismatch: expected '{data.full_name}' in '{output['name']}'"
+        assert data.email in output["email"], \
+            f"Email mismatch: expected '{data.email}' in '{output['email']}'"
+        assert data.current_address in output["current"], \
+            f"Current address mismatch: expected '{data.current_address}' in '{output['current']}'"
+        assert data.permanent_address in output["permanent"], \
+            f"Permanent address mismatch: expected '{data.permanent_address}' in '{output['permanent']}'"

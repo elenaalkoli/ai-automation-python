@@ -5,7 +5,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from core.config import BASE_URL, IMPLICIT_WAIT
+from core.config import BASE_URL, Timeouts
 
 Locator = Tuple[str, str]
 
@@ -13,11 +13,17 @@ Locator = Tuple[str, str]
 class BasePage:
     def __init__(self, driver: WebDriver) -> None:
         self.driver = driver
-        self.wait = WebDriverWait(driver, IMPLICIT_WAIT)
+        self.wait = WebDriverWait(driver, Timeouts.DEFAULT)
         self.base_url = BASE_URL
 
-    def open(self, path: str = "") -> None:
+    def navigate_to(self, path: str = "") -> None:
         self.driver.get(f"{self.base_url}{path}")
+
+    def open(self) -> None:
+        path = getattr(self, "PATH", None)
+        if path is None:
+            raise NotImplementedError(f"{self.__class__.__name__} must define a PATH attribute")
+        self.navigate_to(path)
 
     def find(self, locator: Locator) -> WebElement:
         return self.wait.until(EC.presence_of_element_located(locator))
@@ -29,6 +35,7 @@ class BasePage:
         self.wait.until(EC.element_to_be_clickable(locator)).click()
 
     def js_click(self, locator: Locator) -> None:
+        """Restricted use: only when native click is not possible (e.g. ad overlay blocks element)."""
         self.driver.execute_script("arguments[0].click();", self.find(locator))
 
     def type(self, locator: Locator, text: str) -> None:
