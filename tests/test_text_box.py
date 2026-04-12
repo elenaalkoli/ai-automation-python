@@ -20,10 +20,10 @@ class TestTextBox:
         output = text_box_service.fill_and_submit(data)
 
         assert data.full_name in output["name"], \
-            f"Name mismatch: expected '{data.full_name}' in '{output['name']}'"
+            f"Name: expected '{data.full_name}' in '{output['name']}'"
         assert data.email in output["email"], \
-            f"Email mismatch: expected '{data.email}' in '{output['email']}'"
+            f"Email: expected '{data.email}' in '{output['email']}'"
         assert data.current_address in output["current"], \
-            f"Current address mismatch: expected '{data.current_address}' in '{output['current']}'"
+            f"Current address: expected '{data.current_address}' in '{output['current']}'"
         assert data.permanent_address in output["permanent"], \
-            f"Permanent address mismatch: expected '{data.permanent_address}' in '{output['permanent']}'"
+            f"Permanent address: expected '{data.permanent_address}' in '{output['permanent']}'"

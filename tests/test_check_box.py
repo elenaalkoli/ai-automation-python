@@ -1,24 +1,21 @@
 import pytest
 
-from data.check_box_data import classified_selection
 from pages.check_box_page import CheckBoxPage
 from services.check_box_service import CheckBoxService
 
 
-@pytest.mark.describe("[UI] [CheckBox] [Smoke]")
+@pytest.mark.describe("[UI] [Check-Box] [Smoke]")
 class TestCheckBox:
     @pytest.mark.ui
     @pytest.mark.smoke
-    def test_select_classified_node(
+    def test_select_classified_checkbox_and_verify_result(
         self,
         check_box_page: CheckBoxPage,
         check_box_service: CheckBoxService,
     ) -> None:
         check_box_page.open()
-        data = classified_selection()
 
-        result = check_box_service.expand_and_select(data)
+        result = check_box_service.select_and_get_result("Classified")
 
-        assert result.visible, "Result block is not visible after checkbox selection"
-        assert data.expected_label in result.checked_items, \
-            f"Expected '{data.expected_label}' in checked items, got: {result.checked_items}"
+        assert "classified" in result, \
+            f"Expected 'classified' in result text, got: '{result}'"
