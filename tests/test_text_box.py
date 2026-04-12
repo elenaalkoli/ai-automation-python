@@ -1,5 +1,6 @@
 import pytest
 
+from data.text_box_data import generate_text_box_data
 from pages.text_box_page import TextBoxPage
 
 
@@ -7,20 +8,21 @@ from pages.text_box_page import TextBoxPage
 @pytest.mark.smoke
 class TestTextBox:
     def test_fill_form_and_verify_output(self, driver) -> None:
+        data = generate_text_box_data()
         page = TextBoxPage(driver)
         page.open_page()
 
-        name = "John Doe"
-        email = "johndoe@example.com"
-        current = "123 Main St"
-        permanent = "456 Elm St"
-
-        page.fill_form(name, email, current, permanent)
+        page.fill_form(
+            name=data.full_name,
+            email=data.email,
+            current=data.current_address,
+            permanent=data.permanent_address,
+        )
         page.submit()
 
         output = page.get_output()
 
-        assert name in output["name"]
-        assert email in output["email"]
-        assert current in output["current"]
-        assert permanent in output["permanent"]
+        assert data.full_name in output["name"]
+        assert data.email in output["email"]
+        assert data.current_address in output["current"]
+        assert data.permanent_address in output["permanent"]
