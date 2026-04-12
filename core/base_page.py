@@ -53,6 +53,12 @@ class BasePage:
         except Exception:
             return False
 
+    def wait_until_invisible(self, locator: Locator) -> bool:
+        try:
+            return bool(self.wait.until(EC.invisibility_of_element_located(locator)))
+        except Exception:
+            return False
+
     def scroll_to(self, locator: Locator) -> WebElement:
         element = self.find(locator)
         self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
@@ -63,3 +69,22 @@ class BasePage:
 
     def get_current_url(self) -> str:
         return self.driver.current_url
+
+    def get_window_handles(self) -> list[str]:
+        return self.driver.window_handles
+
+    def get_current_window_handle(self) -> str:
+        return self.driver.current_window_handle
+
+    def wait_for_new_window(self, previous_handles: list[str]) -> str:
+        self.wait.until(lambda driver: len(driver.window_handles) > len(previous_handles))
+        for handle in self.driver.window_handles:
+            if handle not in previous_handles:
+                return handle
+        raise ValueError("New browser window was expected but no new handle was found")
+
+    def switch_to_window(self, handle: str) -> None:
+        self.driver.switch_to.window(handle)
+
+    def close_current_window(self) -> None:
+        self.driver.close()
