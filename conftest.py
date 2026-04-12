@@ -5,11 +5,13 @@ from core.driver_factory import DriverFactory
 from pages.browser_windows_page import BrowserWindowsPage
 from pages.check_box_page import CheckBoxPage
 from pages.modal_dialogs_page import ModalDialogsPage
+from pages.sortable_page import SortablePage
 from pages.text_box_page import TextBoxPage
 from pages.web_tables_page import WebTablesPage
 from services.browser_windows_service import BrowserWindowsService
 from services.check_box_service import CheckBoxService
 from services.modal_dialogs_service import ModalDialogsService
+from services.sortable_service import SortableService
 from services.text_box_service import TextBoxService
 from services.web_tables_service import WebTablesService
 
@@ -69,3 +71,13 @@ def modal_dialogs_page(driver: WebDriver) -> ModalDialogsPage:
 @pytest.fixture
 def modal_dialogs_service(driver: WebDriver) -> ModalDialogsService:
     return ModalDialogsService(driver)
+
+
+@pytest.fixture
+def sortable_page(driver: WebDriver) -> SortablePage:
+    return SortablePage(driver)
+
+
+@pytest.fixture
+def sortable_service(driver: WebDriver) -> SortableService:
+    return SortableService(driver)

@@ -1,5 +1,6 @@
 from typing import Tuple
 
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
@@ -59,6 +60,16 @@ class BasePage:
         except Exception:
             return False
 
+    def drag_item_before(self, source: WebElement, target: WebElement) -> None:
+        """Drag source element and drop it before target element."""
+        ActionChains(self.driver)\
+            .click_and_hold(source)\
+            .pause(0.3)\
+            .move_to_element(target)\
+            .pause(0.1)\
+            .release()\
+            .perform()
+
     def scroll_to(self, locator: Locator) -> WebElement:
         element = self.find(locator)
         self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
@@ -70,21 +81,3 @@ class BasePage:
     def get_current_url(self) -> str:
         return self.driver.current_url
 
-    def get_window_handles(self) -> list[str]:
-        return self.driver.window_handles
-
-    def get_current_window_handle(self) -> str:
-        return self.driver.current_window_handle
-
-    def wait_for_new_window(self, previous_handles: list[str]) -> str:
-        self.wait.until(lambda driver: len(driver.window_handles) > len(previous_handles))
-        for handle in self.driver.window_handles:
-            if handle not in previous_handles:
-                return handle
-        raise ValueError("New browser window was expected but no new handle was found")
-
-    def switch_to_window(self, handle: str) -> None:
-        self.driver.switch_to.window(handle)
-
-    def close_current_window(self) -> None:
-        self.driver.close()
