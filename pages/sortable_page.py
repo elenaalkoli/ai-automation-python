@@ -1,4 +1,6 @@
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 
 from core.base_page import BasePage
 
@@ -33,4 +35,13 @@ class SortablePage(BasePage):
         n = len(self.find_all(locator))
         for i in range(n - 1):
             items = self.find_all(locator)
-            self.drag_item_before(items[-1], items[i])
+            self._drag_item_before(items[-1], items[i])
+
+    def _drag_item_before(self, source: WebElement, target: WebElement) -> None:
+        ActionChains(self.driver)\
+            .click_and_hold(source)\
+            .pause(0.3)\
+            .move_to_element(target)\
+            .pause(0.1)\
+            .release()\
+            .perform()

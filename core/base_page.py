@@ -1,6 +1,5 @@
 from typing import Tuple
 
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
@@ -59,16 +58,6 @@ class BasePage:
             return bool(self.wait.until(EC.invisibility_of_element_located(locator)))
         except Exception:
             return False
-
-    def drag_item_before(self, source: WebElement, target: WebElement) -> None:
-        """Drag source element and drop it before target element."""
-        ActionChains(self.driver)\
-            .click_and_hold(source)\
-            .pause(0.3)\
-            .move_to_element(target)\
-            .pause(0.1)\
-            .release()\
-            .perform()
 
     def scroll_to(self, locator: Locator) -> WebElement:
         element = self.find(locator)
