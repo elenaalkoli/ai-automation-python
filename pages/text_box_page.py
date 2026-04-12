@@ -6,19 +6,12 @@ from core.base_page import BasePage
 class TextBoxPage(BasePage):
     PATH = "/text-box"
 
-    # ── Form inputs ───────────────────────────────────────────────────────────
     FULL_NAME         = (By.ID, "userName")
     EMAIL             = (By.ID, "userEmail")
     CURRENT_ADDRESS   = (By.ID, "currentAddress")
     PERMANENT_ADDRESS = (By.ID, "permanentAddress")
+    SUBMIT_BTN        = (By.CSS_SELECTOR, "#userForm #submit")
 
-    # Scoped to #userForm to avoid matching any other #submit on the page
-    SUBMIT_BTN = (By.CSS_SELECTOR, "#userForm #submit")
-
-    # ── Output block ─────────────────────────────────────────────────────────
-    # Scoped to #output: currentAddress / permanentAddress IDs are shared
-    # with input fields above — without scope the wrong element would be matched.
-    # Bootstrap utility classes (.mb-1) intentionally avoided — they change with lib updates.
     OUTPUT_NAME      = (By.CSS_SELECTOR, "#output #name")
     OUTPUT_EMAIL     = (By.CSS_SELECTOR, "#output #email")
     OUTPUT_CURRENT   = (By.CSS_SELECTOR, "#output #currentAddress")
