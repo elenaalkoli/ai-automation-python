@@ -16,12 +16,26 @@ class WebTablesService(BaseService):
         updated_record: WebTableRecord,
     ) -> WebTableCrudResult:
         self._page.click_add()
-        self._page.fill_record_form(created_record)
+        self._page.fill_record_form(
+            first_name=created_record.first_name,
+            last_name=created_record.last_name,
+            email=created_record.email,
+            age=created_record.age,
+            salary=created_record.salary,
+            department=created_record.department,
+        )
         self._page.submit_record_form()
         created_row = self._page.get_row_values_by_email(created_record.email)
 
         self._page.click_edit_by_email(created_record.email)
-        self._page.fill_record_form(updated_record)
+        self._page.fill_record_form(
+            first_name=updated_record.first_name,
+            last_name=updated_record.last_name,
+            email=updated_record.email,
+            age=updated_record.age,
+            salary=updated_record.salary,
+            department=updated_record.department,
+        )
         self._page.submit_record_form()
         updated_row = self._page.get_row_values_by_email(updated_record.email)
 

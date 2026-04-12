@@ -5,12 +5,14 @@ from core.driver_factory import DriverFactory
 from pages.browser_windows_page import BrowserWindowsPage
 from pages.check_box_page import CheckBoxPage
 from pages.modal_dialogs_page import ModalDialogsPage
+from pages.draggable_page import DraggablePage
 from pages.sortable_page import SortablePage
 from pages.text_box_page import TextBoxPage
 from pages.web_tables_page import WebTablesPage
 from services.browser_windows_service import BrowserWindowsService
 from services.check_box_service import CheckBoxService
 from services.modal_dialogs_service import ModalDialogsService
+from services.draggable_service import DraggableService
 from services.sortable_service import SortableService
 from services.text_box_service import TextBoxService
 from services.web_tables_service import WebTablesService
@@ -81,3 +83,13 @@ def sortable_page(driver: WebDriver) -> SortablePage:
 @pytest.fixture
 def sortable_service(driver: WebDriver) -> SortableService:
     return SortableService(driver)
+
+
+@pytest.fixture
+def draggable_page(driver: WebDriver) -> DraggablePage:
+    return DraggablePage(driver)
+
+
+@pytest.fixture
+def draggable_service(driver: WebDriver) -> DraggableService:
+    return DraggableService(driver)

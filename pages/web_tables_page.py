@@ -3,7 +3,6 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import ElementClickInterceptedException
 
 from core.base_page import BasePage
-from data.web_tables_data import WebTableRecord
 
 
 class WebTablesPage(BasePage):
@@ -29,13 +28,21 @@ class WebTablesPage(BasePage):
     def click_add(self) -> None:
         self.click(self.ADD_BUTTON)
 
-    def fill_record_form(self, record: WebTableRecord) -> None:
-        self.type(self.FIRST_NAME, record.first_name)
-        self.type(self.LAST_NAME, record.last_name)
-        self.type(self.EMAIL, record.email)
-        self.type(self.AGE, record.age)
-        self.type(self.SALARY, record.salary)
-        self.type(self.DEPARTMENT, record.department)
+    def fill_record_form(
+        self,
+        first_name: str,
+        last_name: str,
+        email: str,
+        age: str,
+        salary: str,
+        department: str,
+    ) -> None:
+        self.type(self.FIRST_NAME, first_name)
+        self.type(self.LAST_NAME, last_name)
+        self.type(self.EMAIL, email)
+        self.type(self.AGE, age)
+        self.type(self.SALARY, salary)
+        self.type(self.DEPARTMENT, department)
 
     def submit_record_form(self) -> None:
         self.click(self.SUBMIT_BUTTON)

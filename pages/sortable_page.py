@@ -34,8 +34,10 @@ class SortablePage(BasePage):
     def _reverse_items(self, locator: tuple) -> None:
         n = len(self.find_all(locator))
         for i in range(n - 1):
+            previous_order = self._get_order(locator)
             items = self.find_all(locator)
             self._drag_item_before(items[-1], items[i])
+            self.wait.until(lambda driver: self._get_order(locator) != previous_order)
 
     def _drag_item_before(self, source: WebElement, target: WebElement) -> None:
         ActionChains(self.driver)\
@@ -45,3 +47,6 @@ class SortablePage(BasePage):
             .pause(0.1)\
             .release()\
             .perform()
+
+    def _get_order(self, locator: tuple) -> list[str]:
+        return [el.text.strip() for el in self.find_all(locator)]
