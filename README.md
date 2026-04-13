@@ -1,175 +1,147 @@
-# DemoQA UI Tests
-UI automation framework for DemoQA built with Playwright and TypeScript.
+# ai-automation-python
 
-The project demonstrates:
-- Page Object Model (POM)
-- Service layer approach
-- Test data separation
-- Playwright fixtures
-- CI pipeline integration
+UI automation framework for [DemoQA](https://demoqa.com) built with **Python**, **Selenium**, and **pytest**.
+
+The project demonstrates a strict layered architecture inspired by Page Object Model best practices:
+
+- **BasePage** — generic Selenium primitives only
+- **Page Objects** — page-specific locators and UI interactions
+- **Services** — orchestration layer (no Selenium, no assertions)
+- **Data layer** — dataclasses and factory functions for test data
+- **Tests** — thin assertion-only layer
+
+## Tech Stack
+
+| Tool | Version |
+|---|---|
+| Python | 3.9+ |
+| Selenium | 4.27.1 |
+| pytest | 8.3.4 |
+| pytest-html | 4.1.1 |
+| Allure pytest | 2.13.5 |
+| Faker | 37.1.0 |
+| python-dotenv | 1.0.1 |
+| webdriver-manager | 4.0.2 |
 
 ## Project Setup
 
-### 1. Installation
-
-Clone the repository and install dependencies:
+### 1. Clone and create virtual environment
 
 ```bash
-git clone https://gitlab.mercdev.com/qa-test/elena_al_koli.git
-cd elena_al_koli
-npm install
+git clone https://github.com/elenaalkoli/ai-automation-python.git
+cd ai-automation-python
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
-### 2. Environment Variables
+### 2. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Environment Variables
 
 Create a `.env` file in the project root:
 
 ```text
-DEMOQA_BASE_URL=https://demoqa.com
+BASE_URL=https://demoqa.com
+HEADLESS=true
 ```
 
-### 3. Running Tests
+## Running Tests
 
-All tests (Chromium + Firefox + Webkit):
-
-```bash
-npm test
-```
-
-UI Tests only:
+All tests:
 
 ```bash
-npm run test:ui
+pytest
 ```
 
 Headed mode (visible browser):
 
 ```bash
-npm run test:headed
+HEADLESS=false pytest
 ```
 
-Debug mode (step-by-step):
+By marker — regression only:
 
 ```bash
-npm run test:debug
+pytest -m regression
 ```
 
-Playwright UI Mode:
+By marker — smoke only:
 
 ```bash
-npm run ui-mode
+pytest -m smoke
 ```
 
-Specific project:
+Specific test file:
 
 ```bash
-npm run test --project=chromium
+pytest tests/test_text_box.py
 ```
 
-Running Tests by Tags
-Tests use tags to define scope (Smoke, Regression, Critical Path) and level (UI, E2E, API):
+## Reports
 
-Run Smoke tests:
+HTML report is generated automatically after each run:
 
 ```bash
-npx playwright test --grep @ui
+open reports/report.html
 ```
 
-Run UI tests:
+Allure report:
 
 ```bash
-npx playwright test --grep @ui
+pytest --alluredir=allure-results
+allure serve allure-results
 ```
 
-### 5. Reports
-
-Playwright HTML Report:
-
-```bash
-npx playwright show-report
-```
-
-Allure Report - Generate:
-
-```bash
-npm run allure:generate
-```
-
-Allure Report - Open:
-
-```bash
-npm run allure:open
-```
-
-Full Allure flow:
-
-```bash
-npm test && npm run allure:generate && npm run allure:open
-```
-
-### 5. Code Quality
-
-Lint:
-
-```bash
-npm run lint
-npm run lint:fix
-```
-
-Prettier:
-
-```bash
-npm run prettier
-npm run prettier:write
-```
-
-### 6. Project Structure
+## Project Structure
 
 ```
 .
-├── src/
-│   ├── ui/
-│   │   ├── pages/          # Page Objects
-│   │   │   ├── demoqa.page.ts
-│   │   │   └── text-box.page.ts
-│   │   ├── services/       # UI Services
-│   │   │   └── text-box.ui-service.ts
-│   ├── data/               # Test data generators and interfaces
-│   │   └── text-box.data.ts
-│   ├── fixtures/           # Playwright fixtures (create pages & services for tests)
-│   │   └── ui.fixtures.ts
-│   ├── tests/              # Test files (*.spec.ts)
-│   │   ├── ui/             # UI-level tests
-│   │   │   ├── check-box.spec.ts
-│   └── config/             # Environment variables
-│       └── env.ts
-├── playwright.config.ts
-├── package.json
+├── core/
+│   ├── base_page.py        # Generic Selenium primitives (BasePage)
+│   ├── driver_factory.py   # WebDriver factory (Singleton)
+│   └── config.py
+├── data/
+│   ├── text_box_data.py
+│   ├── check_box_data.py
+│   └── ...
+├── pages/
+│   ├── text_box_page.py
+│   ├── check_box_page.py
+│   └── ...
+├── services/
+│   ├── base_service.py
+│   ├── text_box_service.py
+│   └── ...
+├── tests/
+│   ├── test_text_box.py
+│   ├── test_check_box.py
+│   └── ...
+├── conftest.py             # pytest fixtures
+├── pytest.ini
+├── requirements.txt
 └── .env
 ```
 
-Notes:
-The project architecture allows easy expansion for other types of automation (API, UI, e2e, etc.).
+## Covered Scenarios
 
-### 7. CI/CD Pipeline
+| # | Scenario | Page |
+|---|---|---|
+| 1 | Text Box — fill and verify output | `/text-box` |
+| 2 | Check Box — expand tree and select node | `/checkbox` |
+| 3 | Web Tables — CRUD (add, search, edit, delete) | `/webtables` |
+| 4 | Browser Windows — new tab and new window | `/browser-windows` |
+| 5 | Modal Dialogs — open, verify content, close | `/modal-dialogs` |
+| 6 | Sortable — reverse list and grid order via drag | `/sortable` |
+| 7 | Draggable — Simple, Axis Restricted, Container Restricted, Cursor Style | `/dragabble` |
 
-**Auto-trigger:** push/merge request to `main`
+## Architecture Principles
 
-**Scheduled runs:** 10:00 MSK (`0 10 * * *`)
-
-**Pipeline jobs:**
-
-- `typescript-check` — TypeScript compilation check
-- `ui-tests` — UI tests (parallel: Chromium, Firefox, Webkit)
-- `allure-report` — Allure report generation
-
-**Check results:**
-
-- **CI/CD → Pipelines** — latest runs + artifacts
-- **CI/CD → Schedules** — schedule setup/manual trigger
-
-**Artifacts:**
-
-- `allure-results/` — raw Allure data
-- `allure-report/` — HTML report
-- `playwright-report/` — Playwright
+- **BasePage** contains only generic helpers: `find`, `click`, `type`, `is_visible`, `wait_until_invisible`
+- **Page Objects** own locators and all Selenium interactions; never import data models
+- **Services** orchestrate multi-step flows across page objects and return typed result dataclasses
+- **Tests** contain all `assert` statements; call only service methods
+- **Fixtures** in `conftest.py` inject page and service instances via pytest dependency injection
