@@ -1,14 +1,21 @@
 import pytest
 from selenium.webdriver.remote.webdriver import WebDriver
 
+from api.book_store_api import BookStoreApiClient
 from core.driver_factory import DriverFactory
+from data.book_store_data import SetupContext
+from pages.books_page import BooksPage
 from pages.browser_windows_page import BrowserWindowsPage
 from pages.check_box_page import CheckBoxPage
+from pages.login_page import LoginPage
 from pages.modal_dialogs_page import ModalDialogsPage
 from pages.draggable_page import DraggablePage
+from pages.profile_page import ProfilePage
 from pages.sortable_page import SortablePage
 from pages.text_box_page import TextBoxPage
 from pages.web_tables_page import WebTablesPage
+from services.book_store_service import BookStoreService
+from services.book_store_setup import BookStoreSetup
 from services.browser_windows_service import BrowserWindowsService
 from services.check_box_service import CheckBoxService
 from services.modal_dialogs_service import ModalDialogsService
@@ -93,3 +100,41 @@ def draggable_page(driver: WebDriver) -> DraggablePage:
 @pytest.fixture
 def draggable_service(driver: WebDriver) -> DraggableService:
     return DraggableService(driver)
+
+
+@pytest.fixture(scope="function")
+def book_store_api() -> BookStoreApiClient:
+    return BookStoreApiClient()
+
+
+@pytest.fixture(scope="function")
+def book_store_ctx(book_store_api: BookStoreApiClient) -> SetupContext:
+    ctx = (
+        BookStoreSetup(book_store_api)
+        .with_new_user()
+        .with_book()
+        .build()
+    )
+    yield ctx
+    book_store_api.delete_all_books(ctx.user_id, ctx.token)
+    book_store_api.delete_user(ctx.user_id, ctx.token)
+
+
+@pytest.fixture
+def login_page(driver: WebDriver) -> LoginPage:
+    return LoginPage(driver)
+
+
+@pytest.fixture
+def books_page(driver: WebDriver) -> BooksPage:
+    return BooksPage(driver)
+
+
+@pytest.fixture
+def profile_page(driver: WebDriver) -> ProfilePage:
+    return ProfilePage(driver)
+
+
+@pytest.fixture
+def book_store_service(driver: WebDriver, book_store_api: BookStoreApiClient) -> BookStoreService:
+    return BookStoreService(driver, book_store_api)
