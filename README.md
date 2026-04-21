@@ -100,25 +100,30 @@ allure serve allure-results
 
 ```
 .
+├── api/
+│   └── book_store_api.py   # HTTP client for API setup (Repository)
 ├── core/
 │   ├── base_page.py        # Generic Selenium primitives (BasePage)
 │   ├── driver_factory.py   # WebDriver factory (Singleton)
 │   └── config.py
 ├── data/
 │   ├── text_box_data.py
-│   ├── check_box_data.py
+│   ├── book_store_data.py
 │   └── ...
 ├── pages/
 │   ├── text_box_page.py
-│   ├── check_box_page.py
+│   ├── books_page.py
 │   └── ...
 ├── services/
 │   ├── base_service.py
 │   ├── text_box_service.py
+│   ├── book_store_service.py
+│   ├── book_store_setup.py
+│   ├── search_strategy.py
 │   └── ...
 ├── tests/
 │   ├── test_text_box.py
-│   ├── test_check_box.py
+│   ├── test_book_store.py
 │   └── ...
 ├── conftest.py             # pytest fixtures
 ├── pytest.ini
@@ -137,6 +142,7 @@ allure serve allure-results
 | 5 | Modal Dialogs — open, verify content, close | `/modal-dialogs` |
 | 6 | Sortable — reverse list and grid order via drag | `/sortable` |
 | 7 | Draggable — Simple, Axis Restricted, Container Restricted, Cursor Style | `/dragabble` |
+| 8 | Book Store — login, add book via API, verify profile, search by title/author, delete | `/books` |
 
 ## Architecture Principles
 
@@ -145,3 +151,17 @@ allure serve allure-results
 - **Services** orchestrate multi-step flows across page objects and return typed result dataclasses
 - **Tests** contain all `assert` statements; call only service methods
 - **Fixtures** in `conftest.py` inject page and service instances via pytest dependency injection
+- **API layer** (`api/`) isolates HTTP test data setup from UI — bypasses reCAPTCHA via REST API (Repository pattern)
+
+## Design Patterns
+
+| Pattern | Location | Role |
+|---|---|---|
+| Page Object Model | `pages/` | UI interaction per page |
+| Factory | `data/generate_*` functions | Test data generation |
+| Facade | `services/` | Hide multi-step flows |
+| Singleton | `core/driver_factory.py` | Single WebDriver instance |
+| Value Object | frozen dataclasses in `data/` | Immutable test data |
+| Repository | `api/book_store_api.py` | Isolate API from UI |
+| Strategy | `services/search_strategy.py` | Pluggable search behaviour |
+| Builder | `services/book_store_setup.py` | Fluent test precondition setup |
