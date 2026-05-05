@@ -12,6 +12,11 @@ reports/
 allure-results/
 allure-report/
 
+# Playwright
+test-results/
+playwright-report/
+node_modules/
+
 # Env
 .env
 .DS_Store
