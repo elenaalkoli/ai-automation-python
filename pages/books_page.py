@@ -37,6 +37,7 @@ class BooksPage(BasePage):
         field = self.find(self.SEARCH_BOX)
         field.clear()
         field.send_keys(query)
+        self.wait.until(EC.text_to_be_present_in_element_value(self.SEARCH_BOX, query))
 
     def get_search_results(self) -> list[str]:
         return self._parse_titles_from_body()

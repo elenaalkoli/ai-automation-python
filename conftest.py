@@ -116,8 +116,11 @@ def book_store_ctx(book_store_api: BookStoreApiClient) -> SetupContext:
         .build()
     )
     yield ctx
-    book_store_api.delete_all_books(ctx.user_id, ctx.token)
-    book_store_api.delete_user(ctx.user_id, ctx.token)
+    try:
+        book_store_api.delete_all_books(ctx.user_id, ctx.token)
+        book_store_api.delete_user(ctx.user_id, ctx.token)
+    except Exception:
+        pass
 
 
 @pytest.fixture

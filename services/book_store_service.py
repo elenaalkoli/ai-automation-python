@@ -36,7 +36,6 @@ class BookStoreService(BaseService):
         self._books_page.wait_for_books()
         query = strategy.get_query(ctx.book)
         self._books_page.search(query)
-        import time; time.sleep(1)
         return self._books_page.get_search_results()
 
     def delete_book_from_profile(self, ctx: SetupContext) -> bool:
